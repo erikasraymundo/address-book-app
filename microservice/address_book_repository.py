@@ -17,28 +17,14 @@ class AddressBookRepository(FileRepository):
         return self.address_book
 
     def update(self, id, updateEntry):
-        
-        index = 0
-        for entry in self.get_address_book():
-            if entry.get("id") == id:
-                break
-            index += 1
-
-        self.get_address_book()[index] = updateEntry
+        self.get_address_book()[self.get_index(id)] = updateEntry
         self.save() 
 
     def save(self):
         super().writeFile(json.dumps(self.address_book, indent=4))
     
     def delete(self, id):
-        index = 0
-        for entry in self.get_address_book():
-            if entry.get("id") == id:
-                break
-
-            index += 1
-
-        self.get_address_book().pop(index)
+        self.get_address_book().pop(self.get_index(id))
         self.save()
         
     def search_entries(self, query):
@@ -54,3 +40,10 @@ class AddressBookRepository(FileRepository):
         entry["id"] = utils.generate_id()
         self.get_address_book().append(entry)
         self.save()
+
+    def get_index(self, id):
+        index = 0
+        for entry in self.get_address_book():
+            if entry.get("id") == id:
+                return index
+            index += 1

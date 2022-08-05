@@ -23,6 +23,7 @@ def display_menu():
           "[4] - Edit an Entry\n" +
           "[5] - Delete an Entry\n" +
           "[6] - Exit app\n")
+
     while True:
         selection = input("User Selection: ")
 
@@ -34,25 +35,34 @@ def display_menu():
             display_entries(address_book_api_client.get_address_book())
             return_to_menu()
             break
+
         elif selection == "2":
+            clear_screen()
+            print_header()
+            print_title("Search an entry")
             search_entry_screen()
             return_to_menu()
+            break
 
         elif selection == "3":
             add_entry_screen()
             return_to_menu()
+            break
 
         elif selection == "4":
             update_entry_screen()
             return_to_menu()
+            break
 
         elif selection == "5":
             delete_entry_screen()
             return_to_menu()
+            break
 
         elif selection == "6":
             print("Thank you for using the app!")
-            exit()
+            break
+            # exit()
 
         else:
             print(">> Error: Select from the choices only.")
@@ -106,7 +116,6 @@ def add_entry_screen():
                 entry = {"name": name,
                          "address": address, "email": email, "contact_number": contact}
 
-                print("hello erika: " + json.dumps(entry))
                 address_book_api_client.add_new_address_book(entry)
                 print("\n>> SUCCESS: Entry has been added!")
                 break
@@ -115,10 +124,6 @@ def add_entry_screen():
 
 
 def search_entry_screen():
-    clear_screen()
-    print_header()
-    print_title("Searching an Entry")
-
     query = input("Enter a name you want to search: ")
     results = address_book_api_client.search_entries(query)
 
@@ -127,8 +132,6 @@ def search_entry_screen():
     else:
         print(">> Search Results for '{}':".format(query))
         display_entries(results)
-    # else:
-    #     display_entries(results)
 
     return results
 
@@ -143,7 +146,7 @@ def search_entry_to_modify(results, operation):
                     return results[index-1]
                 else:
                     print(
-                        f">> Error: That entry #no doesn't exist, please only choose from {1} - {len(results)}.")
+                        ">> Error: That entry #no doesn't exist, please only choose from {} - {}.".format(1, len(results)))
             except:
                 print(">> Error: Numbers only.")
     else:
@@ -166,6 +169,9 @@ def update_entry_screen():
         record_to_edit = None
 
     if record_to_edit != None:
+
+        print("\nYou are editing {}...\n".format(record_to_edit.get("name")))
+        
         def get_user_input(
             input, default): return input if input != "" else default
 
@@ -217,7 +223,7 @@ def delete_entry_screen():
         while True:
             try:
                 confirm_choice = input(
-                    f"Are you sure you want to delete entry? Y - yes | N - no: ")
+                    "Are you sure you want to delete entry? Y - yes | N - no: ")
                 if confirm_func(confirm_choice, "y", "yes"):
                     address_book_api_client.delete_entry(entry_to_delete["id"])
                     print("\n>> SUCCESS: The entry has been deleted!")
@@ -236,7 +242,7 @@ def print_header():
 
 
 def print_title(title):
-    print(f"** {title} **\n")
+    print("** {} **\n".format(title))
 
 
 display_menu()
